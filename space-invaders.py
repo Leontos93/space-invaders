@@ -4,7 +4,7 @@ import arcade
 WINDOW_WIDTH = 1024
 WINDOW_HEIGHT = 700
 WINDOW_TITLE = "Space invaders"
-PLAYER_MOVEMENT_SPEED = 2
+PLAYER_MOVEMENT_SPEED = 10
 
 
 class MyGame(arcade.Window):
@@ -43,6 +43,24 @@ class MyGame(arcade.Window):
         )
         self.player_list.draw()
         self.enemy_list.draw()
+
+    def on_update(self, delta_time):
+        self.player_list.update()
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+
+    def on_key_release(self, key, modifiers):
+        if (
+            key == arcade.key.LEFT
+            or key == arcade.key.A
+            or key == arcade.key.RIGHT
+            or key == arcade.key.D
+        ):
+            self.player_sprite.change_x = 0
 
 
 def main():
