@@ -31,8 +31,8 @@ class MyGame(arcade.Window):
         self.enemy_sprite = arcade.Sprite(
             ":resources:images/space_shooter/playerShip1_green.png", 0.5
         )
-        self.enemy_sprite.center_x = WINDOW_WIDTH / 2
-        self.enemy_sprite.bottom = 10
+        self.enemy_sprite.center_x = self.player_sprite.center_x
+        self.enemy_sprite.top = WINDOW_HEIGHT - 10
         self.enemy_list.append(self.enemy_sprite)
 
     def on_draw(self):
@@ -42,6 +42,7 @@ class MyGame(arcade.Window):
             arcade.LBWH(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
         )
         self.player_list.draw()
+        self.enemy_list.draw()
 
 
 def main():
