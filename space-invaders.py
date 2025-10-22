@@ -46,6 +46,10 @@ class MyGame(arcade.Window):
 
     def on_update(self, delta_time):
         self.player_list.update()
+        if self.player_sprite.left < 0:
+            self.player_sprite.left = 0
+        elif self.player_sprite.right > WINDOW_WIDTH:
+            self.player_sprite.right = WINDOW_WIDTH
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.A:
