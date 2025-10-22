@@ -5,6 +5,7 @@ WINDOW_WIDTH = 1024
 WINDOW_HEIGHT = 700
 WINDOW_TITLE = "Space invaders"
 PLAYER_MOVEMENT_SPEED = 10
+BULLET_SPEED = 5
 
 
 class MyGame(arcade.Window):
@@ -15,6 +16,7 @@ class MyGame(arcade.Window):
         self.player_sprite = None
         self.enemy_list = None
         self.enemy_sprite = None
+        self.bullet_list = None
         self.background = arcade.load_texture("background_space.png")
 
     def setup(self):
@@ -35,6 +37,7 @@ class MyGame(arcade.Window):
         self.enemy_sprite.center_x = self.player_sprite.center_x
         self.enemy_sprite.top = WINDOW_HEIGHT - 10
         self.enemy_list.append(self.enemy_sprite)
+        self.bullet_list = arcade.SpriteList()
 
     def on_draw(self):
         self.clear()
@@ -44,19 +47,33 @@ class MyGame(arcade.Window):
         )
         self.player_list.draw()
         self.enemy_list.draw()
+        self.bullet_list.draw()
 
     def on_update(self, delta_time):
         self.player_list.update()
+        self.bullet_list.update()
         if self.player_sprite.left < 0:
             self.player_sprite.left = 0
         elif self.player_sprite.right > WINDOW_WIDTH:
             self.player_sprite.right = WINDOW_WIDTH
+        for bullet in self.bullet_list:
+            if bullet.bottom > WINDOW_HEIGHT:
+                bullet.remove_from_sprite_lists()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.SPACE:
+            bullet = arcade.Sprite(
+                ":resources:images/space_shooter/laserBlue01.png", 0.8
+            )
+            bullet.center_x = self.player_sprite.center_x
+            bullet.bottom = self.player_sprite.top
+            bullet.angle = -90
+            bullet.change_y = BULLET_SPEED
+            self.bullet_list.append(bullet)
 
     def on_key_release(self, key, modifiers):
         if (
