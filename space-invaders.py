@@ -31,6 +31,7 @@ class MyGame(arcade.Window):
         self.enemy_sprite = arcade.Sprite(
             ":resources:images/space_shooter/playerShip1_green.png", 0.5
         )
+        self.enemy_sprite.angle = 180
         self.enemy_sprite.center_x = self.player_sprite.center_x
         self.enemy_sprite.top = WINDOW_HEIGHT - 10
         self.enemy_list.append(self.enemy_sprite)
