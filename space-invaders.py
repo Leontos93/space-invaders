@@ -6,7 +6,7 @@ WINDOW_HEIGHT = 720
 WINDOW_TITLE = "Space invaders"
 
 
-class GameView(arcade.Window):
+class MyGame(arcade.Window):
 
     def __init__(self):
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
@@ -20,7 +20,7 @@ class GameView(arcade.Window):
 
 
 def main():
-    window = GameView()
+    window = MyGame()
     window.setup()
     arcade.run()
 
