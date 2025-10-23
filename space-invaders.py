@@ -1,4 +1,5 @@
 import arcade
+import random
 
 # Constants
 WINDOW_WIDTH = 1024
@@ -67,6 +68,18 @@ class MyGame(arcade.Window):
                 bullet.remove_from_sprite_lists()
             for enemy in hit_list:
                 enemy.remove_from_sprite_lists()
+        for enemy in self.enemy_list:
+            odds = 200
+            adj_odds = int(odds * (1 / 60) / delta_time)
+            if random.randrange(adj_odds) == 0:
+                bullet = arcade.Sprite(
+                    ":resources:images/space_shooter/laserBlue01.png"
+                )
+                bullet.center_x = enemy.center_x
+                bullet.angle = 90
+                bullet.top = enemy.bottom
+                bullet.change_y = -2
+                self.bullet_list.append(bullet)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.A:
