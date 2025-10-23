@@ -59,6 +59,12 @@ class MyGame(arcade.Window):
         for bullet in self.bullet_list:
             if bullet.bottom > WINDOW_HEIGHT:
                 bullet.remove_from_sprite_lists()
+        for bullet in self.bullet_list:
+            hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
+        if len(hit_list) > 0:
+            bullet.remove_from_sprite_lists()
+        for enemy in hit_list:
+            enemy.remove_from_sprite_lists()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.A:
