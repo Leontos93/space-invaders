@@ -15,7 +15,6 @@ class MyGame(arcade.Window):
         self.player_list = None
         self.player_sprite = None
         self.enemy_list = None
-        self.enemy_sprite = None
         self.bullet_list = None
         self.background = arcade.load_texture("background_space.png")
 
@@ -30,13 +29,15 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
         # Встановлюємо ворога
         self.enemy_list = arcade.SpriteList()
-        self.enemy_sprite = arcade.Sprite(
-            ":resources:images/space_shooter/playerShip1_green.png", 0.5
-        )
-        self.enemy_sprite.angle = 180
-        self.enemy_sprite.center_x = self.player_sprite.center_x
-        self.enemy_sprite.top = WINDOW_HEIGHT - 10
-        self.enemy_list.append(self.enemy_sprite)
+        for i in range(10):
+            enemy_sprite = arcade.Sprite(
+                ":resources:images/space_shooter/playerShip1_green.png", 0.5
+            )
+            enemy_sprite.angle = 180
+            enemy_sprite.center_x = 70 + i * 100
+            enemy_sprite.top = WINDOW_HEIGHT - 70
+            self.enemy_list.append(enemy_sprite)
+        # Кулі
         self.bullet_list = arcade.SpriteList()
 
     def on_draw(self):
@@ -61,10 +62,10 @@ class MyGame(arcade.Window):
                 bullet.remove_from_sprite_lists()
         for bullet in self.bullet_list:
             hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
-        if len(hit_list) > 0:
-            bullet.remove_from_sprite_lists()
-        for enemy in hit_list:
-            enemy.remove_from_sprite_lists()
+            if len(hit_list) > 0:
+                bullet.remove_from_sprite_lists()
+            for enemy in hit_list:
+                enemy.remove_from_sprite_lists()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.A:
