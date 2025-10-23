@@ -29,14 +29,15 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
         # Встановлюємо ворога
         self.enemy_list = arcade.SpriteList()
-        for i in range(10):
-            enemy_sprite = arcade.Sprite(
-                ":resources:images/space_shooter/playerShip1_green.png", 0.5
-            )
-            enemy_sprite.angle = 180
-            enemy_sprite.center_x = 70 + i * 100
-            enemy_sprite.top = WINDOW_HEIGHT - 70
-            self.enemy_list.append(enemy_sprite)
+        for row in range(3):
+            for colum in range(10):
+                enemy_sprite = arcade.Sprite(
+                    ":resources:images/space_shooter/playerShip1_green.png", 0.5
+                )
+                enemy_sprite.angle = 180
+                enemy_sprite.center_x = 70 + colum * 100
+                enemy_sprite.top = WINDOW_HEIGHT - 70 - row * 60
+                self.enemy_list.append(enemy_sprite)
         # Кулі
         self.bullet_list = arcade.SpriteList()
 
