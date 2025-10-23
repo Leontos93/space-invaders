@@ -17,6 +17,7 @@ class MyGame(arcade.Window):
         self.player_sprite = None
         self.enemy_list = None
         self.bullet_list = None
+        self.enemy_bullet_list = None
         self.background = arcade.load_texture("background_space.png")
 
     def setup(self):
@@ -41,6 +42,7 @@ class MyGame(arcade.Window):
                 self.enemy_list.append(enemy_sprite)
         # Кулі
         self.bullet_list = arcade.SpriteList()
+        self.enemy_bullet_list = arcade.SpriteList()
 
     def on_draw(self):
         self.clear()
@@ -51,6 +53,7 @@ class MyGame(arcade.Window):
         self.player_list.draw()
         self.enemy_list.draw()
         self.bullet_list.draw()
+        self.enemy_bullet_list.draw()
 
     def on_update(self, delta_time):
         self.player_list.update()
@@ -68,6 +71,7 @@ class MyGame(arcade.Window):
                 bullet.remove_from_sprite_lists()
             for enemy in hit_list:
                 enemy.remove_from_sprite_lists()
+
         for enemy in self.enemy_list:
             odds = 200
             adj_odds = int(odds * (1 / 60) / delta_time)
@@ -79,7 +83,7 @@ class MyGame(arcade.Window):
                 bullet.angle = 90
                 bullet.top = enemy.bottom
                 bullet.change_y = -2
-                self.bullet_list.append(bullet)
+                self.enemy_bullet_list.append(bullet)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.A:
