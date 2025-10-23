@@ -58,6 +58,7 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         self.player_list.update()
         self.bullet_list.update()
+        self.enemy_bullet_list.update()
         if self.player_sprite.left < 0:
             self.player_sprite.left = 0
         elif self.player_sprite.right > WINDOW_WIDTH:
@@ -71,7 +72,11 @@ class MyGame(arcade.Window):
                 bullet.remove_from_sprite_lists()
             for enemy in hit_list:
                 enemy.remove_from_sprite_lists()
-
+        for e_bullet in list(self.enemy_bullet_list):
+            if e_bullet.top < 0:
+                e_bullet.remove_from_sprite_lists()
+            elif arcade.check_for_collision(e_bullet, self.player_sprite):
+                e_bullet.remove_from_sprite_lists()
         for enemy in self.enemy_list:
             odds = 200
             adj_odds = int(odds * (1 / 60) / delta_time)
