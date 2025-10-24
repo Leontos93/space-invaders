@@ -123,9 +123,11 @@ class MyGame(arcade.Window):
             self.game_over = True
 
     def on_key_press(self, key, modifiers):
-        if self.game_over and key == arcade.key.ENTER:
-            self.setup()
-            self.game_over = False
+        if self.game_over:
+            if key == arcade.key.ENTER:
+                self.setup()
+                self.game_over = False
+            return
         if key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.RIGHT or key == arcade.key.D:
