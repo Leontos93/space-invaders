@@ -96,22 +96,23 @@ class MyGame(arcade.Window):
             self.enemy_change_x *= -1
             for enemy in self.enemy_list:
                 enemy.center_y -= 20
-        if random.randrange(200) == 0:
+        if self.enemy_list and random.randrange(200) == 0:
+            shooting_enemy = random.choice(self.enemy_list)
             enemy_bullet = arcade.Sprite(
                 ":resources:images/space_shooter/laserRed01.png"
             )
-            enemy_bullet.center_x = enemy.center_x
-            enemy_bullet.top = enemy.bottom
+            enemy_bullet.center_x = shooting_enemy.center_x
+            enemy_bullet.top = shooting_enemy.bottom
             enemy_bullet.angle = 180
             enemy_bullet.change_y = -BULLET_SPEED
             self.enemy_bullet_list.append(enemy_bullet)
         for bullet in self.enemy_bullet_list:
-            if arcade.check_for_collision(bullet, self.player_sprite):
-                bullet.remove_from_sprite_lists()
-            self.game_over = True
-            self.player_sprite.remove_from_sprite_lists()
             if bullet.top < 0:
                 bullet.remove_from_sprite_lists()
+            elif arcade.check_for_collision(bullet, self.player_sprite):
+                bullet.remove_from_sprite_lists()
+                self.game_over = True
+                self.player_sprite.remove_from_sprite_lists()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.A:
