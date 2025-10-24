@@ -58,37 +58,39 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         self.player_list.update()
         self.bullet_list.update()
+        self.enemy_list.update()
         self.enemy_bullet_list.update()
         if self.player_sprite.left < 0:
             self.player_sprite.left = 0
         elif self.player_sprite.right > WINDOW_WIDTH:
             self.player_sprite.right = WINDOW_WIDTH
         for bullet in self.bullet_list:
-            if bullet.bottom > WINDOW_HEIGHT:
-                bullet.remove_from_sprite_lists()
-        for bullet in self.bullet_list:
             hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
-            if len(hit_list) > 0:
+            if hit_list:
                 bullet.remove_from_sprite_lists()
-            for enemy in hit_list:
-                enemy.remove_from_sprite_lists()
-        for e_bullet in list(self.enemy_bullet_list):
-            if e_bullet.top < 0:
-                e_bullet.remove_from_sprite_lists()
-            elif arcade.check_for_collision(e_bullet, self.player_sprite):
-                e_bullet.remove_from_sprite_lists()
+                for enemy in hit_list:
+                    enemy.remove_from_sprite_lists()
+                continue
+            if bullet.bottom > self.height:
+                bullet.remove_from_sprite_lists()
         for enemy in self.enemy_list:
-            odds = 200
-            adj_odds = int(odds * (1 / 60) / delta_time)
-            if random.randrange(adj_odds) == 0:
-                bullet = arcade.Sprite(
-                    ":resources:images/space_shooter/laserBlue01.png"
+            if random.randrange(200) == 0:
+                enemy_bullet = arcade.Sprite(
+                    ":resources:images/space_shooter/laserRed01.png"
                 )
-                bullet.center_x = enemy.center_x
-                bullet.angle = 90
-                bullet.top = enemy.bottom
-                bullet.change_y = -2
-                self.enemy_bullet_list.append(bullet)
+                enemy_bullet.center_x = enemy.center_x
+                enemy_bullet.top = enemy.bottom
+                enemy_bullet.angle = 180
+                enemy_bullet.change_y = -BULLET_SPEED
+                self.enemy_bullet_list.append(enemy_bullet)
+        for bullet in self.enemy_bullet_list:
+            if arcade.check_for_collision(bullet, self.player_sprite):
+                bullet.remove_from_sprite_lists()
+            # ТУТ БУДЕ ЛОГІКА ПОРАЗКИ ГРАВЦЯ
+            print("GAME OVER")  # Поки що просто виведемо повідомлення
+            # arcade.exit() # Можна навіть закрити гру
+            if bullet.top < 0:
+                bullet.remove_from_sprite_lists()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.A:
