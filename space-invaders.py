@@ -75,7 +75,17 @@ class MyGame(arcade.Window):
                 continue
             if bullet.bottom > self.height:
                 bullet.remove_from_sprite_lists()
+        move_down = False
         for enemy in self.enemy_list:
+            enemy.center_x += self.enemy_change_x
+            if enemy.right > WINDOW_WIDTH and self.enemy_change_x > 0:
+                move_down = True
+            if enemy.left < 0 and self.enemy_change_x < 0:
+                move_down = True
+        if move_down:
+            self.enemy_change_x *= -1
+            for enemy in self.enemy_list:
+                enemy.center_y -= 20
             if random.randrange(200) == 0:
                 enemy_bullet = arcade.Sprite(
                     ":resources:images/space_shooter/laserRed01.png"
