@@ -18,7 +18,7 @@ class MyGame(arcade.Window):
         self.enemy_list = None
         self.bullet_list = None
         self.enemy_bullet_list = None
-        self.enemy_change_x = 3
+        self.enemy_change_x = 1
         self.game_over = False
         self.background = arcade.load_texture("background_space.png")
 
@@ -56,6 +56,16 @@ class MyGame(arcade.Window):
         self.enemy_list.draw()
         self.bullet_list.draw()
         self.enemy_bullet_list.draw()
+        if self.game_over:
+            arcade.draw_text(
+                "Game Over",
+                WINDOW_WIDTH / 2,
+                WINDOW_HEIGHT / 2,
+                arcade.color.WHITE,
+                64,
+                anchor_x="center",
+                anchor_y="center",
+            )
 
     def on_update(self, delta_time):
         self.player_list.update()
@@ -86,21 +96,20 @@ class MyGame(arcade.Window):
             self.enemy_change_x *= -1
             for enemy in self.enemy_list:
                 enemy.center_y -= 20
-            if random.randrange(200) == 0:
-                enemy_bullet = arcade.Sprite(
-                    ":resources:images/space_shooter/laserRed01.png"
-                )
-                enemy_bullet.center_x = enemy.center_x
-                enemy_bullet.top = enemy.bottom
-                enemy_bullet.angle = 180
-                enemy_bullet.change_y = -BULLET_SPEED
-                self.enemy_bullet_list.append(enemy_bullet)
+        if random.randrange(200) == 0:
+            enemy_bullet = arcade.Sprite(
+                ":resources:images/space_shooter/laserRed01.png"
+            )
+            enemy_bullet.center_x = enemy.center_x
+            enemy_bullet.top = enemy.bottom
+            enemy_bullet.angle = 180
+            enemy_bullet.change_y = -BULLET_SPEED
+            self.enemy_bullet_list.append(enemy_bullet)
         for bullet in self.enemy_bullet_list:
             if arcade.check_for_collision(bullet, self.player_sprite):
                 bullet.remove_from_sprite_lists()
-            # ТУТ БУДЕ ЛОГІКА ПОРАЗКИ ГРАВЦЯ
-            print("GAME OVER")  # Поки що просто виведемо повідомлення
-            # arcade.exit() # Можна навіть закрити гру
+            self.game_over = True
+            self.player_sprite.remove_from_sprite_lists()
             if bullet.top < 0:
                 bullet.remove_from_sprite_lists()
 
