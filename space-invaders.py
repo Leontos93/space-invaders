@@ -50,8 +50,6 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        score_text = f"Score: {self.score}"
-        arcade.draw_text(score_text, 10, 10, arcade.csscolor.WHITE, 18)
         arcade.draw_texture_rect(
             self.background,
             arcade.LBWH(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
@@ -60,6 +58,8 @@ class MyGame(arcade.Window):
         self.enemy_list.draw()
         self.bullet_list.draw()
         self.enemy_bullet_list.draw()
+        score_text = f"Score: {self.score}"
+        arcade.draw_text(score_text, 10, 10, arcade.csscolor.WHITE, 18)
         if self.game_over:
             arcade.draw_text(
                 "Game Over",
