@@ -61,8 +61,9 @@ class MyGame(arcade.Window):
         score_text = f"Score: {self.score}"
         arcade.draw_text(score_text, 10, 10, arcade.csscolor.WHITE, 18)
         if self.game_over:
+            message = "YOU WIN!" if not self.enemy_list else "GAME OVER"
             arcade.draw_text(
-                "Game Over",
+                message,
                 WINDOW_WIDTH / 2,
                 WINDOW_HEIGHT / 2,
                 arcade.color.WHITE,
@@ -118,6 +119,8 @@ class MyGame(arcade.Window):
                 bullet.remove_from_sprite_lists()
                 self.game_over = True
                 self.player_sprite.remove_from_sprite_lists()
+        if not self.enemy_list:
+            self.game_over = True
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.A:
