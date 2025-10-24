@@ -20,9 +20,11 @@ class MyGame(arcade.Window):
         self.enemy_bullet_list = None
         self.enemy_change_x = 1
         self.game_over = False
+        self.score = 0
         self.background = arcade.load_texture("background_space.png")
 
     def setup(self):
+        self.score = 0
         # Встановлюємо гравця
         self.player_list = arcade.SpriteList()
         self.player_sprite = arcade.Sprite(
@@ -48,6 +50,8 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
+        score_text = f"Score: {self.score}"
+        arcade.draw_text(score_text, 10, 10, arcade.csscolor.WHITE, 18)
         arcade.draw_texture_rect(
             self.background,
             arcade.LBWH(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
@@ -82,6 +86,7 @@ class MyGame(arcade.Window):
                 bullet.remove_from_sprite_lists()
                 for enemy in hit_list:
                     enemy.remove_from_sprite_lists()
+                    self.score += 10
                 continue
             if bullet.bottom > self.height:
                 bullet.remove_from_sprite_lists()
