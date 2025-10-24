@@ -18,6 +18,8 @@ class MyGame(arcade.Window):
         self.enemy_list = None
         self.bullet_list = None
         self.enemy_bullet_list = None
+        self.enemy_change_x = 3
+        self.game_over = False
         self.background = arcade.load_texture("background_space.png")
 
     def setup(self):
