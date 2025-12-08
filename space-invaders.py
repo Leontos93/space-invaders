@@ -6,7 +6,7 @@ import os
 # Constants
 WINDOW_WIDTH = 1024
 WINDOW_HEIGHT = 700
-WINDOW_TITLE = "Space Invaders - Modern Edition"
+WINDOW_TITLE = "Space Invaders - Modern Edition!!!"
 PLAYER_MOVEMENT_SPEED = 10
 BULLET_SPEED = 5
 INITIAL_LIVES = 3
