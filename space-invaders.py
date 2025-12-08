@@ -17,9 +17,8 @@ class Explosion(arcade.Sprite):
     """Particle effect for explosions"""
 
     def __init__(self, center_x, center_y):
-        # Do NOT call super().__init__()! Sprite base creates its own texture we do not use here
-        self.center_x = center_x
-        self.center_y = center_y
+        # Initialize sprite with position so internal state (_position) exists
+        super().__init__(center_x=center_x, center_y=center_y)
         self.lifetime = 0.3  # Duration in seconds
         self.age = 0
         self.particles = []
@@ -81,9 +80,8 @@ class PowerUp(arcade.Sprite):
     """Power-up items that drop from enemies"""
 
     def __init__(self, center_x, center_y, power_type):
-        super().__init__()
-        self.center_x = center_x
-        self.center_y = center_y
+        # Initialize sprite with position so internal state (_position) exists
+        super().__init__(center_x=center_x, center_y=center_y)
         self.power_type = power_type  # 'rapid_fire' or 'multi_shot'
         self.change_y = -2
         self.lifetime = 10.0  # Disappear after 10 seconds
