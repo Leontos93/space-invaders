@@ -17,7 +17,7 @@ class Explosion(arcade.Sprite):
     """Particle effect for explosions"""
 
     def __init__(self, center_x, center_y):
-        super().__init__()
+        # Do NOT call super().__init__()! Sprite base creates its own texture we do not use here
         self.center_x = center_x
         self.center_y = center_y
         self.lifetime = 0.3  # Duration in seconds
@@ -46,7 +46,11 @@ class Explosion(arcade.Sprite):
     def update(self, delta_time):
         self.age += delta_time
         if self.age >= self.lifetime:
-            self.remove_from_sprite_lists()
+            # If trying to use SpriteList, you must call this manually
+            try:
+                self.remove_from_sprite_lists()
+            except Exception:
+                pass
             return
 
         # Update particle positions
@@ -56,15 +60,18 @@ class Explosion(arcade.Sprite):
             particle["vy"] -= 0.5  # Gravity effect
 
     def draw(self):
-        alpha = int(255 * (1 - self.age / self.lifetime))
+        alpha = int(255 * max(0, (1 - self.age / self.lifetime)))
         for particle in self.particles:
             color = particle["color"]
-            # Arcade colors are RGB tuples, add alpha
-            if isinstance(color, tuple) and len(color) >= 3:
+            # Add alpha channel to RGB color
+            if isinstance(color, tuple) and len(color) == 3:
+                rgba = (*color, alpha)
+            elif isinstance(color, tuple) and len(color) == 4:
+                # Already RGBA, just update alpha
                 rgba = (color[0], color[1], color[2], alpha)
             else:
-                # Fallback to yellow with alpha
                 rgba = (255, 255, 0, alpha)
+            # Use arcade's low-level shape draw to avoid texture/black square issue
             arcade.draw_circle_filled(
                 particle["x"], particle["y"], particle["size"], rgba
             )
