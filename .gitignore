@@ -642,3 +642,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Game high score file
+high_score.json
