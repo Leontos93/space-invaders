@@ -2,6 +2,7 @@ import arcade
 import random
 import json
 import os
+import arcade.gui
 
 # Constants
 WINDOW_WIDTH = 1024
@@ -122,6 +123,7 @@ class MyGame(arcade.Window):
         self.enemy_bullet_list = None
         self.explosion_list = None
         self.powerup_list = None
+        self.ui_manager = arcade.gui.UIManager()
 
         # --- Game state attributes ---
         self.enemy_change_x = 1
@@ -130,6 +132,7 @@ class MyGame(arcade.Window):
         self.lives = INITIAL_LIVES
         self.level = 1
         self.high_score = self.load_high_score()
+        self.in_menu = True
 
         # --- Power-up states ---
         self.rapid_fire_active = False
@@ -147,6 +150,9 @@ class MyGame(arcade.Window):
         self.explosion_sound = None
         self.powerup_sound = None
         self.background_music = None
+
+        # Build and show menu UI
+        self.build_menu()
 
     def load_high_score(self):
         """Load high score from file"""
@@ -168,6 +174,13 @@ class MyGame(arcade.Window):
                     json.dump({"high_score": self.high_score}, f)
             except:
                 pass
+
+    def start_game(self):
+        """Start a new game from the menu"""
+        self.in_menu = False
+        self.ui_manager.disable()
+        self.ui_manager.clear()
+        self.setup()
 
     def setup(self):
         # Reset game state
@@ -243,7 +256,37 @@ class MyGame(arcade.Window):
             arcade.LBWH(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
         )
 
-        # Draw all the sprite lists
+        # Menu screen
+        if self.in_menu:
+            self.clear()
+            arcade.draw_texture_rect(
+                self.background,
+                arcade.LBWH(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
+            )
+            title = "Space Invaders"
+            arcade.draw_text(
+                title,
+                WINDOW_WIDTH / 2,
+                WINDOW_HEIGHT * 0.7,
+                arcade.color.WHITE,
+                48,
+                anchor_x="center",
+                anchor_y="center",
+                bold=True,
+            )
+            arcade.draw_text(
+                "Press ENTER or click Start",
+                WINDOW_WIDTH / 2,
+                WINDOW_HEIGHT * 0.6,
+                arcade.color.LIGHT_GRAY,
+                20,
+                anchor_x="center",
+                anchor_y="center",
+            )
+            self.ui_manager.draw()
+            return
+
+        # Draw all the sprite lists (gameplay)
         self.player_list.draw()
         self.enemy_list.draw()
         self.bullet_list.draw()
@@ -346,6 +389,8 @@ class MyGame(arcade.Window):
             )
 
     def on_update(self, delta_time):
+        if self.in_menu:
+            return
         if self.game_over:
             return
 
@@ -493,6 +538,12 @@ class MyGame(arcade.Window):
             self.score += 100 * self.level
 
     def on_key_press(self, key, modifiers):
+        # Menu controls
+        if self.in_menu:
+            if key == arcade.key.ENTER or key == arcade.key.SPACE:
+                self.start_game()
+            return
+
         # --- Game Restart Logic ---
         # If the game is over, check for the ENTER key to restart
         if self.game_over and key == arcade.key.ENTER:
@@ -558,11 +609,32 @@ class MyGame(arcade.Window):
         ):
             self.player_sprite.change_x = 0
 
+    def build_menu(self):
+        """Create simple menu with Start and Exit buttons"""
+        self.ui_manager.enable()
+        self.ui_manager.clear()
+        start_button = arcade.gui.UIFlatButton(text="Start Game", width=200)
+        exit_button = arcade.gui.UIFlatButton(text="Exit", width=200)
+        v_box = arcade.gui.UIBoxLayout()
+        v_box.add(start_button)
+        v_box.add(arcade.gui.UISpace(height=20))
+        v_box.add(exit_button)
+        anchor = arcade.gui.UIAnchorLayout()
+        anchor.add(child=v_box, anchor_x="center", anchor_y="center")
+        self.ui_manager.add(anchor)
+
+        @start_button.event("on_click")
+        def on_click_start(event):
+            self.start_game()
+
+        @exit_button.event("on_click")
+        def on_click_exit(event):
+            self.close()
+
 
 def main():
     """Main function to set up and run the game."""
     window = MyGame()
-    window.setup()
     arcade.run()
 
 
