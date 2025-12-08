@@ -102,7 +102,7 @@ class PowerUp(arcade.Sprite):
 
     def draw(self):
         # Draw a simple colored circle with pulsing effect
-        size = 15 + int(3 * abs(arcade.utils.lerp(-1, 1, (self.age * 5) % 1)))
+        size = 15 + int(3 * abs(arcade.math.lerp(-1, 1, (self.age * 5) % 1)))
         arcade.draw_circle_filled(self.center_x, self.center_y, size, self.color)
         arcade.draw_circle_outline(
             self.center_x, self.center_y, size, arcade.color.WHITE, 2
@@ -248,8 +248,12 @@ class MyGame(arcade.Window):
         self.enemy_list.draw()
         self.bullet_list.draw()
         self.enemy_bullet_list.draw()
-        self.explosion_list.draw()
-        self.powerup_list.draw()
+        # Explosion sprites are custom-drawn (no textures), so call draw per item
+        for explosion in self.explosion_list:
+            explosion.draw()
+        # Power-ups also have custom draw (no textures)
+        for powerup in self.powerup_list:
+            powerup.draw()
 
         # Draw UI elements
         self.draw_ui()
