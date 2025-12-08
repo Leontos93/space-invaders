@@ -124,6 +124,10 @@ class MyGame(arcade.Window):
         self.explosion_list = None
         self.powerup_list = None
         self.ui_manager = arcade.gui.UIManager()
+        self.mouse_x = 0
+        self.mouse_y = 0
+        self._hover_start = False
+        self._hover_exit = False
 
         # --- Game state attributes ---
         self.enemy_change_x = 1
@@ -151,6 +155,7 @@ class MyGame(arcade.Window):
         self.powerup_sound = None
         self.background_music = None
         self.hover_sound = None
+        self.hover_volume = 0.6
 
         # Build and show menu UI
         self.build_menu()
@@ -219,7 +224,11 @@ class MyGame(arcade.Window):
             self.shoot_sound = arcade.Sound(":resources:sounds/laser1.wav")
             self.explosion_sound = arcade.Sound(":resources:sounds/explosion1.wav")
             self.powerup_sound = arcade.Sound(":resources:sounds/upgrade1.wav")
-            self.hover_sound = arcade.Sound(":resources:sounds/upgrade4.wav")
+            # Hover sound with fallback
+            try:
+                self.hover_sound = arcade.Sound(":resources:sounds/coin4.wav")
+            except Exception:
+                self.hover_sound = arcade.Sound(":resources:sounds/upgrade4.wav")
         except:
             pass  # Sounds are optional
 
@@ -617,6 +626,10 @@ class MyGame(arcade.Window):
         self.ui_manager.clear()
         start_button = arcade.gui.UIFlatButton(text="Start Game", width=200)
         exit_button = arcade.gui.UIFlatButton(text="Exit", width=200)
+        self.start_button = start_button
+        self.exit_button = exit_button
+        self._hover_start = False
+        self._hover_exit = False
         v_box = arcade.gui.UIBoxLayout()
         # Spacer to push buttons a bit lower
         v_box.add(arcade.gui.UISpace(height=120))
@@ -626,6 +639,11 @@ class MyGame(arcade.Window):
         anchor = arcade.gui.UIAnchorLayout()
         anchor.add(child=v_box, anchor_x="center", anchor_y="center")
         self.ui_manager.add(anchor)
+        # Ensure layout is computed so rects are available for hover detection
+        try:
+            self.ui_manager.do_layout()
+        except Exception:
+            pass
 
         @start_button.event("on_click")
         def on_click_start(event):
@@ -635,16 +653,37 @@ class MyGame(arcade.Window):
         def on_click_exit(event):
             self.close()
 
-        # Hover sounds
-        @start_button.event("on_hover")
-        def on_hover_start(event):
-            if self.hover_sound:
-                arcade.play_sound(self.hover_sound, volume=0.3)
+    def _play_hover_if_needed(self, is_start_hover, is_exit_hover):
+        """Play hover sound on state change"""
+        if self.hover_sound:
+            if is_start_hover and not self._hover_start:
+                arcade.play_sound(self.hover_sound, volume=self.hover_volume)
+            if is_exit_hover and not self._hover_exit:
+                arcade.play_sound(self.hover_sound, volume=self.hover_volume)
+        self._hover_start = is_start_hover
+        self._hover_exit = is_exit_hover
 
-        @exit_button.event("on_hover")
-        def on_hover_exit(event):
-            if self.hover_sound:
-                arcade.play_sound(self.hover_sound, volume=0.3)
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.mouse_x = x
+        self.mouse_y = y
+        # Check hover only while in menu
+        if self.in_menu and self.start_button and self.exit_button:
+
+            def _contains(widget):
+                if hasattr(widget, "rect") and widget.rect:
+                    r = widget.rect
+                    # Prefer built-in collide check if available
+                    if hasattr(r, "collide_with_point"):
+                        try:
+                            return r.collide_with_point(x, y)
+                        except Exception:
+                            pass
+                    return (r.x <= x <= r.x + r.width) and (r.y <= y <= r.y + r.height)
+                return False
+
+            is_start_hover = _contains(self.start_button)
+            is_exit_hover = _contains(self.exit_button)
+            self._play_hover_if_needed(is_start_hover, is_exit_hover)
 
 
 def main():
