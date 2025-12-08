@@ -224,11 +224,6 @@ class MyGame(arcade.Window):
             self.shoot_sound = arcade.Sound(":resources:sounds/laser1.wav")
             self.explosion_sound = arcade.Sound(":resources:sounds/explosion1.wav")
             self.powerup_sound = arcade.Sound(":resources:sounds/upgrade1.wav")
-            # Hover sound with fallback
-            try:
-                self.hover_sound = arcade.Sound(":resources:sounds/coin4.wav")
-            except Exception:
-                self.hover_sound = arcade.Sound(":resources:sounds/upgrade4.wav")
         except:
             pass  # Sounds are optional
 
@@ -655,11 +650,6 @@ class MyGame(arcade.Window):
 
     def _play_hover_if_needed(self, is_start_hover, is_exit_hover):
         """Play hover sound on state change"""
-        if self.hover_sound:
-            if is_start_hover and not self._hover_start:
-                arcade.play_sound(self.hover_sound, volume=self.hover_volume)
-            if is_exit_hover and not self._hover_exit:
-                arcade.play_sound(self.hover_sound, volume=self.hover_volume)
         self._hover_start = is_start_hover
         self._hover_exit = is_exit_hover
 
