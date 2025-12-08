@@ -150,6 +150,7 @@ class MyGame(arcade.Window):
         self.explosion_sound = None
         self.powerup_sound = None
         self.background_music = None
+        self.hover_sound = None
 
         # Build and show menu UI
         self.build_menu()
@@ -218,6 +219,7 @@ class MyGame(arcade.Window):
             self.shoot_sound = arcade.Sound(":resources:sounds/laser1.wav")
             self.explosion_sound = arcade.Sound(":resources:sounds/explosion1.wav")
             self.powerup_sound = arcade.Sound(":resources:sounds/upgrade1.wav")
+            self.hover_sound = arcade.Sound(":resources:sounds/upgrade4.wav")
         except:
             pass  # Sounds are optional
 
@@ -616,6 +618,8 @@ class MyGame(arcade.Window):
         start_button = arcade.gui.UIFlatButton(text="Start Game", width=200)
         exit_button = arcade.gui.UIFlatButton(text="Exit", width=200)
         v_box = arcade.gui.UIBoxLayout()
+        # Spacer to push buttons a bit lower
+        v_box.add(arcade.gui.UISpace(height=120))
         v_box.add(start_button)
         v_box.add(arcade.gui.UISpace(height=20))
         v_box.add(exit_button)
@@ -630,6 +634,17 @@ class MyGame(arcade.Window):
         @exit_button.event("on_click")
         def on_click_exit(event):
             self.close()
+
+        # Hover sounds
+        @start_button.event("on_hover")
+        def on_hover_start(event):
+            if self.hover_sound:
+                arcade.play_sound(self.hover_sound, volume=0.3)
+
+        @exit_button.event("on_hover")
+        def on_hover_exit(event):
+            if self.hover_sound:
+                arcade.play_sound(self.hover_sound, volume=0.3)
 
 
 def main():
